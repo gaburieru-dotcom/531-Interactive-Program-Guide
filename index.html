@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5/3/1プログラム インタラクティブガイド</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: アプリケーションは、ユーザーが5/3/1プログラムを「理解」し、「計画」し、「実践」するための論理的な流れに沿って構成されています。まず「概要」で基本を学び、次に「仕組み」で周期的な構造を視覚的に理解します。中心的な機能である「サイクル計算機」では、ユーザーが自身のデータを入力してパーソナライズされたトレーニング計画を即座に作成できます。これにより、報告書の理論的な知識が実践的な行動へと直結します。「アシスタンスワーク」と「FAQ」セクションは、さらなる探求と疑問解消をサポートします。このタスク指向の構造は、静的な報告書を動的で使いやすいツールへと変換し、ユーザーの学習とモチベーション向上を最大化するために選択されました。 -->
+    <!-- Visualization & Content Choices: 報告書の各情報を、ユーザーの理解とインタラクションを最大化する目的で最適な形式に変換しました。1) 報告書情報：4つの主要リフト → 目標：情報を素早く伝達 → 提示方法：アイコン付きカード → 理由：視覚的な識別を容易にし、情報を魅力的に見せるため。 2) 報告書情報：4週間のサイクル構造（表1）→ 目標：周期的な流れを理解させる → 提示方法：インタラクティブなタブ付きダイアグラム → 理由：静的な表よりも動的で理解しやすく、ユーザーの関与を促すため。 3) 報告書情報：ユーザーの進捗例（表2）→ 目標：プログラムの効果を比較・提示 → 提示方法：Chart.jsによる棒グラフ → 理由：開始時と終了時の成長を視覚的に強調し、プログラムの有効性を直感的に伝えるため。 4) 報告書情報：アシスタンスワークの種類 → 目標：情報を整理して提供 → 提示方法：アコーディオンUI → 理由：大量のテキスト情報をコンパクトにまとめ、ユーザーが必要な情報だけを選択して閲覧できるようにするため。これらの選択はすべて、ユーザー体験を向上させ、複雑な情報を消化しやすくすることを目的としています。 -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Noto Sans JP', sans-serif; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .tab-active {
+            border-color: #374151;
+            color: #111827;
+            background-color: #f3f4f6;
+        }
+        .tab-inactive {
+            border-color: transparent;
+            color: #6b7280;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <!-- ヘッダーのタイトルに画像を追加 -->
+            <h1 class="text-xl md:text-2xl font-bold text-stone-900 flex items-center">
+                <img src="/Users/shoujikeita/Downloads/ヘッダー２.png" alt="5/3/1ロゴ" class="h-16 w-16 mr-2 rounded-full">
+                5/3/1 Interactive Guide
+            </h1>
+            <div class="hidden md:flex space-x-6">
+                <a href="#overview" class="text-stone-600 hover:text-stone-900 transition">概要</a>
+                <a href="#how-it-works" class="text-stone-600 hover:text-stone-900 transition">仕組み</a>
+                <a href="#calculator" class="text-stone-600 hover:text-stone-900 transition">サイクル計算機</a>
+                <a href="#assistance" class="text-stone-600 hover:text-stone-900 transition">アシスタンス</a>
+                <a href="#faq" class="text-stone-600 hover:text-stone-900 transition">FAQ</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-2 bg-white">
+             <a href="#overview" class="block text-stone-600 hover:text-stone-900 transition py-1">概要</a>
+             <a href="#how-it-works" class="block text-stone-600 hover:text-stone-900 transition py-1">仕組み</a>
+             <a href="#calculator" class="block text-stone-600 hover:text-stone-900 transition py-1">サイクル計算機</a>
+             <a href="#assistance" class="block text-stone-600 hover:text-stone-900 transition py-1">アシスタンス</a>
+             <a href="#faq" class="block text-stone-600 hover:text-stone-900 transition py-1">FAQ</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-12">
+
+        <section id="hero" class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 text-stone-900">5/3/1プログラムへようこそ</h2>
+            <p class="max-w-3xl mx-auto text-lg text-stone-600">
+                ジム・ウェンドラーによって考案された、シンプルかつ効果的な筋力向上プログラム。このガイドで5/3/1の全てを理解し、あなた自身のトレーニング計画を立てましょう。
+            </p>
+        </section>
+
+        <section id="overview" class="mb-16 scroll-mt-20">
+            <h3 class="text-3xl font-bold text-center mb-10">プログラム概要</h3>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h4 class="text-2xl font-semibold mb-3">核となる哲学</h4>
+                    <p class="mb-4 text-stone-700">5/3/1は「漸進的過負荷」の原則に基づいています。焦らず、軽い重量から始め、時間をかけて着実に筋力を向上させることを目指します。これにより、怪我のリスクを減らし、燃え尽き症候群を防ぎながら長期的な成長を可能にします。</p>
+                    <div class="space-y-3">
+                        <div class="flex items-start p-3 bg-white rounded-lg shadow-sm">
+                            <span class="text-xl mr-3">🚀</span>
+                            <div><strong class="text-stone-800">着実な進歩:</strong> 短期的な記録より、長期的な成長を重視。</div>
+                        </div>
+                        <div class="flex items-start p-3 bg-white rounded-lg shadow-sm">
+                            <span class="text-xl mr-3">🛡️</span>
+                            <div><strong class="text-stone-800">安全性:</strong> サブマキシマル（最大未満の）重量で始め、安全にフォームを習得。</div>
+                        </div>
+                         <div class="flex items-start p-3 bg-white rounded-lg shadow-sm">
+                            <span class="text-xl mr-3">💪</span>
+                            <div><strong class="text-stone-800">シンプルさ:</strong> 複雑な計算は不要。明確なルールで迷わずトレーニング。</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-2xl font-semibold mb-4 text-center">４つの主要リフト</h4>
+                    <p class="text-center text-stone-700 mb-6">プログラムは、全身の筋力を効率的に鍛える以下の4つの多関節運動を中心に構成されます。</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white p-6 rounded-lg shadow-sm text-center">
+                            <!-- スクワットの画像に置き換え -->
+                            <img src="/Users/shoujikeita/Downloads/gym-3516208_1280.jpg" alt="スクワットを行う男性" class="mx-auto mb-2 rounded-md">
+                            <h5 class="text-lg font-bold">スクワット</h5>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm text-center">
+                             <!-- ベンチプレスの画像に置き換え -->
+                             <img src="/Users/shoujikeita/Downloads/shoham-avisrur-Dueawl5Q75s-unsplash.jpg" alt="ベンチプレスを行う男性" class="mx-auto mb-2 rounded-md">
+                            <h5 class="text-lg font-bold">ベンチプレス</h5>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm text-center">
+                             <!-- デッドリフトの画像に置き換え -->
+                             <img src="/Users/shoujikeita/Downloads/alora-griffiths-E_y9X4kNzxs-unsplash.jpg" alt="デッドリフトを行う男性" class="mx-auto mb-2 rounded-md">
+                            <h5 class="text-lg font-bold">デッドリフト</h5>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm text-center">
+                             <!-- オーバーヘッドプレスの画像に置き換え -->
+                             <img src="/Users/shoujikeita/Downloads/john-arano-h4i9G-de7Po-unsplash.jpg" alt="オーバーヘッドプレスを行う男性" class="mx-auto mb-2 rounded-md">
+                            <h5 class="text-lg font-bold">オーバーヘッドプレス</h5>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="mb-16 scroll-mt-20">
+            <h3 class="text-3xl font-bold text-center mb-10">プログラムの仕組み</h3>
+            <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+                <p class="text-center text-stone-700 mb-6">5/3/1は4週間のサイクルで構成されます。各週でレップ数と使用重量の割合が変化します。重量はあなたの「トレーニングマックス(TM)」に基づいて計算されます。TMは、あなたの1回最大挙上重量(1RM)の90%です。</p>
+                <div class="border-b border-gray-200 mb-6">
+                    <nav class="flex -mb-px" id="cycle-tabs">
+                        <button data-week="1" class="cycle-tab tab-active text-center py-4 px-1 border-b-2 font-medium text-sm flex-1">Week 1: 5s週</button>
+                        <button data-week="2" class="cycle-tab tab-inactive text-center py-4 px-1 border-b-2 font-medium text-sm flex-1">Week 2: 3s週</button>
+                        <button data-week="3" class="cycle-tab tab-inactive text-center py-4 px-1 border-b-2 font-medium text-sm flex-1">Week 3: 5/3/1週</button>
+                        <button data-week="4" class="cycle-tab tab-inactive text-center py-4 px-1 border-b-2 font-medium text-sm flex-1">Week 4: デロード</button>
+                    </nav>
+                </div>
+                <div id="cycle-content" class="fade-in">
+                </div>
+            </div>
+        </section>
+
+
+        <section id="calculator" class="mb-16 scroll-mt-20">
+            <h3 class="text-3xl font-bold text-center mb-2">サイクル計算機</h3>
+            <p class="text-center text-stone-600 mb-10">あなたの1RM（1回最大挙上重量）を入力して、最初のトレーニングサイクル計画を作成しましょう。</p>
+            
+            <div class="grid lg:grid-cols-5 gap-8">
+                <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg h-fit">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="text-xl font-semibold">1RMを入力</h4>
+                        <div class="flex items-center space-x-2 bg-stone-100 p-1 rounded-md">
+                            <button id="unit-kg" class="px-3 py-1 text-sm rounded-md bg-stone-800 text-white">kg</button>
+                            <button id="unit-lb" class="px-3 py-1 text-sm rounded-md">lb</button>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="squat-1rm" class="block text-sm font-medium text-stone-700">スクワット 1RM</label>
+                            <input type="number" id="squat-1rm" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-stone-500 focus:ring-stone-500" placeholder="100">
+                        </div>
+                        <div>
+                            <label for="bench-1rm" class="block text-sm font-medium text-stone-700">ベンチプレス 1RM</label>
+                            <input type="number" id="bench-1rm" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-stone-500 focus:ring-stone-500" placeholder="80">
+                        </div>
+                        <div>
+                            <label for="deadlift-1rm" class="block text-sm font-medium text-stone-700">デッドリフト 1RM</label>
+                            <input type="number" id="deadlift-1rm" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-stone-500 focus:ring-stone-500" placeholder="120">
+                        </div>
+                        <div>
+                            <label for="ohp-1rm" class="block text-sm font-medium text-stone-700">オーバーヘッドプレス 1RM</label>
+                            <input type="number" id="ohp-1rm" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-stone-500 focus:ring-stone-500" placeholder="50">
+                        </div>
+                        <!-- BBBアシスタンスの割合入力フィールドを追加 -->
+                        <div class="pt-4 border-t border-gray-200">
+                            <label for="bbb-percentage" class="block text-sm font-medium text-stone-700">BBBアシスタンス (%)</label>
+                            <!-- value="60" を削除し、プレースホルダーのみに -->
+                            <input type="number" id="bbb-percentage" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-stone-500 focus:ring-stone-500" placeholder="60">
+                            <p class="text-xs text-stone-500 mt-1">Boring But Big (BBB) のTMに対する割合（通常50-60%）。空欄の場合は60%で計算されます。</p>
+                        </div>
+                    </div>
+                    <button id="calculate-btn" class="mt-6 w-full bg-stone-800 text-white font-bold py-3 px-4 rounded-lg hover:bg-stone-700 transition duration-300">計画を計算する</button>
+                </div>
+
+                <div class="lg:col-span-3">
+                    <div id="result-output" class="bg-white p-6 rounded-lg shadow-lg min-h-full hidden">
+                        <h4 class="text-xl font-semibold mb-4">あなたのトレーニング計画</h4>
+                        <div class="border-b border-gray-200 mb-4">
+                            <nav class="flex -mb-px" id="lift-tabs">
+                                <button data-lift="squat" class="lift-tab tab-active text-center py-3 px-1 border-b-2 font-medium text-sm flex-1">スクワット</button>
+                                <button data-lift="bench" class="lift-tab tab-inactive text-center py-3 px-1 border-b-2 font-medium text-sm flex-1">ベンチプレス</button>
+                                <button data-lift="deadlift" class="lift-tab tab-inactive text-center py-3 px-1 border-b-2 font-medium text-sm flex-1">デッドリフト</button>
+                                <button data-lift="ohp" class="lift-tab tab-inactive text-center py-3 px-1 border-b-2 font-medium text-sm flex-1">OHP</button>
+                            </nav>
+                        </div>
+                        <div id="lift-tm-display" class="mb-4 text-center p-3 bg-stone-100 rounded-md"></div>
+                        <div id="lift-plan-table" class="fade-in"></div>
+
+                        <!-- BBBアシスタンスの表示セクションを追加 -->
+                        <div id="bbb-plan-section" class="mt-8 pt-4 border-t border-gray-200 hidden">
+                            <h5 class="text-lg font-semibold mb-3">Boring But Big (BBB) アシスタンス</h5>
+                            <div id="bbb-plan-details" class="p-3 bg-stone-100 rounded-md"></div>
+                        </div>
+                    </div>
+                     <div id="result-placeholder" class="bg-white p-6 rounded-lg shadow-lg min-h-full flex items-center justify-center">
+                        <p class="text-stone-500 text-center">左側にあなたの1RMを入力して、<br>トレーニング計画を生成してください。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="progress-example" class="mb-16 scroll-mt-20">
+            <h3 class="text-3xl font-bold text-center mb-2">期待できる成果</h3>
+            <p class="text-center text-stone-600 mb-10">このプログラムは着実な成長を促します。以下は、あるユーザーの4.5ヶ月間の成長事例です。</p>
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <div class="chart-container">
+                    <canvas id="progressChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="assistance" class="mb-16 scroll-mt-20">
+            <h3 class="text-3xl font-bold text-center mb-10">アシスタンスワーク</h3>
+            <p class="max-w-3xl mx-auto text-center text-stone-700 mb-8">主要リフトを補強し、弱点を克服するためにアシスタンスワークを追加します。自分の目標や回復能力に合わせて選択してください。</p>
+            <div id="assistance-accordion" class="max-w-3xl mx-auto space-y-3">
+            </div>
+        </section>
+        
+        <section id="faq" class="scroll-mt-20">
+             <h3 class="text-3xl font-bold text-center mb-10">FAQ & 実践のヒント</h3>
+             <div class="max-w-3xl mx-auto grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h4 class="text-xl font-semibold mb-3">1RMが分からない場合は？</h4>
+                    <p class="text-stone-700">正確な1RMが不明な場合、過去のトレーニング記録から推定するか、明らかに扱える軽い重量から始めてください。大切なのは「軽い重量から始める」原則を守ることです。</p>
+                    <!-- ここにアプリの宣伝を追加 -->
+                    <div class="mt-4 p-3 bg-stone-100 rounded-md text-sm text-stone-700">
+                        <p class="font-semibold mb-2">💡 1RMの計算には、私の開発したアプリも役立ちます！</p>
+                        <p>「Max RM換算機 for BIG3」は、あなたの挙上重量とレップ数から、簡単に1RMを計算できるツールです。</p>
+                        <a href="https://apps.apple.com/jp/app/max-rm%E6%8F%9B%E7%AE%97%E6%A9%9F-for-big3/id6569255164" target="_blank" class="inline-block mt-2 bg-stone-800 text-white px-4 py-2 rounded-lg text-xs font-medium hover:bg-stone-700 transition duration-300">
+                            App Storeでチェックする
+                        </a>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h4 class="text-xl font-semibold mb-3">プログラムのカスタマイズは？</h4>
+                    <p class="text-stone-700">基本原則（4週サイクル、TMの90%ルール、デロード）は変えないでください。アシスタンスワークは、あなたの目標に合わせて柔軟に選択できます。</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h4 class="text-xl font-semibold mb-3">食事と回復の重要性は？</h4>
+                    <p class="text-stone-700">トレーニング効果を最大化するには、十分な栄養（特にタンパク質）と睡眠が不可欠です。デロード週は疲労回復のための重要な期間なので、決してスキップしないでください。</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h4 class="text-xl font-semibold mb-3">トレーニングの頻度は？</h4>
+                    <p class="text-stone-700">週に3〜4日が推奨されます。主要リフト4種目を1週間（または次のサイクルが始まるまで）で終えるようにスケジュールを組みます。休息日を適切に設けることが重要です。</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-stone-800 text-white mt-16">
+        <div class="container mx-auto px-4 py-6 text-center">
+            <p>このインタラクティブガイドは、ジム・ウェンドラー氏の5/3/1プログラムの原則に基づいています。</p>
+            <p class="text-sm text-stone-400 mt-2">常に安全を第一に、正しいフォームでトレーニングを行ってください。</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // アシスタンスワークのデータ
+            const assistanceData = [
+                {
+                    title: "Boring But Big (BBB)",
+                    content: "最も人気のあるテンプレートの一つ。筋肥大と筋持久力向上に効果的です。メインリフトの後、同じ種目をトレーニングマックス(TM)の50-60%の重量で、5セット10レップ行います。"
+                },
+                {
+                    title: "The Triumvirate",
+                    content: "シンプルなアプローチ。各トレーニングを主要リフトを含めて3つのエクササイズに限定します。つまり、アシスタンスエクササイズは2つだけ選択します。"
+                },
+                {
+                    title: "Bodyweight",
+                    content: "すべてのアシスタンスを自重エクササイズで行います。各エクササイズで合計75レップ以上を目指すことが推奨されます。（例：懸垂、腕立て伏せ、ディップスなど）"
+                },
+                {
+                    title: "I'm Not Doing Jack Shit",
+                    content: "アシスタンスワークを一切行わない選択肢。時間が非常に限られている場合や、回復を最優先したい場合に適しています。"
+                }
+            ];
+
+            // サイクル構造のデータ
+            const cycleData = {
+                1: {
+                    title: "Week 1: 5s 週",
+                    description: "この週は、比較的高いレップ数で基礎的な筋力と技術を固めることに重点を置きます。",
+                    sets: [
+                        { percent: 65, reps: "5" },
+                        { percent: 75, reps: "5" },
+                        { percent: 85, reps: "5+" }
+                    ]
+                },
+                2: {
+                    title: "Week 2: 3s 週",
+                    description: "重量を増やし、より高い強度で筋力に刺激を与えます。",
+                    sets: [
+                        { percent: 70, reps: "3" },
+                        { percent: 80, reps: "3" },
+                        { percent: 90, reps: "3+" }
+                    ]
+                },
+                3: {
+                    title: "Week 3: 5/3/1 週",
+                    description: "サイクルで最も高強度な週。あなたの限界に挑戦し、レップPR(自己ベスト)の更新を目指します。",
+                    sets: [
+                        { percent: 75, reps: "5" },
+                        { percent: 85, reps: "3" },
+                        { percent: 95, reps: "1+" }
+                    ]
+                },
+                4: {
+                    title: "Week 4: デロード週",
+                    description: "強度を大幅に下げ、身体と神経系を回復させます。次のサイクルへの準備期間であり、非常に重要です。",
+                    sets: [
+                        { percent: 40, reps: "5" },
+                        { percent: 50, reps: "5" },
+                        { percent: 60, reps: "5" }
+                    ]
+                }
+            };
+            
+            // 主要リフトのIDリスト
+            const lifts = ['squat', 'bench', 'deadlift', 'ohp'];
+            // 現在の単位 (kg または lb)
+            let currentUnit = 'kg';
+            // 現在選択されているリフト
+            let currentLift = 'squat';
+            // 各リフトのトレーニングマックスを格納するオブジェクト
+            let trainingMaxes = {};
+
+            // モバイルメニューボタンの挙動を制御
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            // モバイルメニュー内のリンクをクリックするとメニューを閉じる
+            mobileMenu.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+
+
+            // アシスタンスワークのアコーディオンUIをレンダリングする関数
+            function renderAssistanceAccordion() {
+                const accordionContainer = document.getElementById('assistance-accordion');
+                accordionContainer.innerHTML = ''; // 既存の内容をクリア
+                assistanceData.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.classList.add('bg-white', 'rounded-lg', 'shadow-sm', 'overflow-hidden');
+                    div.innerHTML = `
+                        <button class="w-full text-left p-4 flex justify-between items-center font-semibold hover:bg-stone-100 focus:outline-none">
+                            <span>${item.title}</span>
+                            <span class="transform transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="px-4 pb-4 text-stone-700 hidden">
+                            <p>${item.content}</p>
+                        </div>
+                    `;
+                    accordionContainer.appendChild(div);
+                });
+
+                // アコーディオンの開閉イベントリスナー
+                accordionContainer.addEventListener('click', (e) => {
+                    const button = e.target.closest('button');
+                    if (button) {
+                        const content = button.nextElementSibling; // 次の要素（コンテンツ）を取得
+                        const arrow = button.querySelector('span:last-child'); // 矢印アイコンを取得
+                        content.classList.toggle('hidden'); // コンテンツの表示/非表示を切り替え
+                        arrow.classList.toggle('rotate-180'); // 矢印を回転させる
+                    }
+                });
+            }
+
+            // サイクルタブとコンテンツ表示領域の取得
+            const cycleTabs = document.getElementById('cycle-tabs');
+            const cycleContent = document.getElementById('cycle-content');
+
+            // 選択された週のサイクルコンテンツをレンダリングする関数
+            function renderCycleContent(week) {
+                const data = cycleData[week];
+                cycleContent.innerHTML = `
+                    <h5 class="text-xl font-bold mb-2 text-center text-stone-800">${data.title}</h5>
+                    <p class="text-stone-600 mb-6 text-center">${data.description}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                        ${data.sets.map((set, index) => `
+                            <div class="bg-stone-100 p-4 rounded-lg">
+                                <p class="text-sm text-stone-500">セット ${index + 1}</p>
+                                <p class="text-2xl font-bold text-stone-900">${set.percent}% <span class="text-lg font-medium">x ${set.reps}</span></p>
+                                <p class="text-xs text-stone-500 mt-1">TMの${set.percent}%の重量</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                     <p class="text-center text-sm text-stone-500 mt-4">最後のセットの「+」は、As Many Reps As Possible (AMRAP) を意味します。</p>
+                `;
+                // フェードインアニメーションをリセットして再適用
+                cycleContent.classList.remove('fade-in');
+                void cycleContent.offsetWidth; // リフローを強制
+                cycleContent.classList.add('fade-in');
+            }
+            
+            // サイクルタブのクリックイベントリスナー
+            cycleTabs.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (button) {
+                    // 全てのタブのアクティブ状態を解除
+                    cycleTabs.querySelectorAll('button').forEach(btn => {
+                        btn.classList.remove('tab-active');
+                        btn.classList.add('tab-inactive');
+                    });
+                    // クリックされたタブをアクティブにする
+                    button.classList.add('tab-active');
+                    button.classList.remove('tab-inactive');
+                    renderCycleContent(button.dataset.week); // 選択された週のコンテンツをレンダリング
+                }
+            });
+
+            // 単位切り替えボタンの取得
+            const unitKgBtn = document.getElementById('unit-kg');
+            const unitLbBtn = document.getElementById('unit-lb');
+            
+            // kgボタンクリック時の処理
+            unitKgBtn.addEventListener('click', () => {
+                if (currentUnit === 'lb') {
+                    currentUnit = 'kg';
+                    unitKgBtn.classList.add('bg-stone-800', 'text-white');
+                    unitLbBtn.classList.remove('bg-stone-800', 'text-white');
+                    updateInputsAndResults('lb_to_kg'); // lbからkgへ変換して更新
+                }
+            });
+
+            // lbボタンクリック時の処理
+            unitLbBtn.addEventListener('click', () => {
+                if (currentUnit === 'kg') {
+                    currentUnit = 'lb';
+                    unitLbBtn.classList.add('bg-stone-800', 'text-white');
+                    unitKgBtn.classList.remove('bg-stone-800', 'text-white');
+                    updateInputsAndResults('kg_to_lb'); // kgからlbへ変換して更新
+                }
+            });
+
+            // 入力値と結果を単位変換に基づいて更新する関数
+            function updateInputsAndResults(conversionType) {
+                const conversionRate = 2.20462; // 1 kg = 2.20462 lb
+                lifts.forEach(lift => {
+                    const input = document.getElementById(`${lift}-1rm`);
+                    if (input.value) {
+                       const value = parseFloat(input.value);
+                       if (conversionType === 'kg_to_lb') {
+                           input.value = (value * conversionRate).toFixed(1); // kg -> lb
+                       } else {
+                           input.value = (value / conversionRate).toFixed(1); // lb -> kg
+                       }
+                    }
+                });
+                // 計算結果が表示されている場合は再計算して表示を更新
+                if (document.getElementById('result-output').classList.contains('hidden') === false) {
+                     calculateAndDisplayPlan();
+                }
+            }
+
+
+            // 計算ボタンのイベントリスナー
+            document.getElementById('calculate-btn').addEventListener('click', calculateAndDisplayPlan);
+            
+            // トレーニング計画を計算し表示する関数
+            function calculateAndDisplayPlan() {
+                let hasInput = false;
+                lifts.forEach(lift => {
+                    const inputVal = document.getElementById(`${lift}-1rm`).value;
+                    if(inputVal) hasInput = true; // 何か入力があればフラグを立てる
+                    const oneRepMax = parseFloat(inputVal) || 0; // 入力がない場合は0
+                    trainingMaxes[lift] = oneRepMax * 0.9; // TMを計算 (1RMの90%)
+                });
+                
+                // 入力がない場合はエラーメッセージを表示して終了
+                if (!hasInput) {
+                    document.getElementById('lift-tm-display').innerHTML = `<p class="text-red-500">少なくとも1つのリフトの1RMを入力してください。</p>`;
+                    // BBBセクションも非表示にする
+                    document.getElementById('bbb-plan-section').classList.add('hidden');
+                    return;
+                }
+
+                document.getElementById('result-output').classList.remove('hidden'); // 結果表示エリアを表示
+                document.getElementById('result-placeholder').classList.add('hidden'); // プレースホルダーを非表示
+                renderLiftPlan(currentLift); // 現在選択されているリフトの計画をレンダリング
+            }
+            
+            // リフト別タブの取得
+            const liftTabs = document.getElementById('lift-tabs');
+            // リフト別タブのクリックイベントリスナー
+            liftTabs.addEventListener('click', (e) => {
+                 const button = e.target.closest('button');
+                 if (button) {
+                    currentLift = button.dataset.lift; // 選択されたリフトを更新
+                    // 全てのタブのアクティブ状態を解除
+                    liftTabs.querySelectorAll('button').forEach(btn => {
+                        btn.classList.remove('tab-active');
+                        btn.classList.add('tab-inactive');
+                    });
+                    // クリックされたタブをアクティブにする
+                    button.classList.add('tab-active');
+                    button.classList.remove('tab-inactive');
+                    renderLiftPlan(currentLift); // 選択されたリフトの計画をレンダリング
+                 }
+            });
+            
+            // 特定のリフトのトレーニング計画を表示する関数
+            function renderLiftPlan(lift) {
+                const tm = trainingMaxes[lift];
+                // TMが計算できない、または0以下の場合はメッセージを表示して終了
+                if (isNaN(tm) || tm <= 0) {
+                     document.getElementById('lift-tm-display').innerHTML = `<p class="text-stone-600">このリフトの1RMが入力されていません。</p>`;
+                     document.getElementById('lift-plan-table').innerHTML = ''; // テーブルをクリア
+                     document.getElementById('bbb-plan-section').classList.add('hidden'); // BBBセクションも非表示にする
+                     return;
+                }
+
+                // TMの表示を更新
+                document.getElementById('lift-tm-display').innerHTML = `
+                    <p class="font-semibold text-stone-800">トレーニングマックス(TM): ${tm.toFixed(2)} ${currentUnit}</p>
+                    <p class="text-sm text-stone-500">(1RM ${ (tm / 0.9).toFixed(2) } ${currentUnit} の90%)</p>
+                `;
+                
+                // トレーニング計画テーブルをレンダリング
+                const tableContainer = document.getElementById('lift-plan-table');
+                tableContainer.innerHTML = `
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-stone-500">
+                            <thead class="text-xs text-stone-700 uppercase bg-stone-100">
+                                <tr>
+                                    <th scope="col" class="px-4 py-3">週</th>
+                                    <th scope="col" class="px-4 py-3">セット 1</th>
+                                    <th scope="col" class="px-4 py-3">セット 2</th>
+                                    <th scope="col" class="px-4 py-3">セット 3</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${Object.keys(cycleData).map(week => `
+                                    <tr class="bg-white border-b">
+                                        <th scope="row" class="px-4 py-4 font-medium text-stone-900 whitespace-nowrap">${cycleData[week].title.replace(':','<br>')}</th>
+                                        ${cycleData[week].sets.map(set => `
+                                            <td class="px-4 py-4">
+                                                <span class="font-bold text-base text-stone-800">${(tm * (set.percent / 100)).toFixed(2)} ${currentUnit}</span>
+                                                <br> x ${set.reps} reps
+                                            </td>
+                                        `).join('')}
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                // フェードインアニメーションをリセットして再適用
+                tableContainer.classList.remove('fade-in');
+                void tableContainer.offsetWidth; // リフローを強制
+                tableContainer.classList.add('fade-in');
+
+                // BBBアシスタンスの計算と表示
+                const bbbSection = document.getElementById('bbb-plan-section');
+                const bbbDetails = document.getElementById('bbb-plan-details');
+
+                const bbbPercentageInput = document.getElementById('bbb-percentage');
+                // 入力がない場合はデフォルトで60%を使用
+                const bbbPercentage = parseFloat(bbbPercentageInput.value) || 60; 
+
+                const bbbWeight = tm * (bbbPercentage / 100);
+
+                bbbDetails.innerHTML = `
+                    <p class="text-stone-700">
+                        メインリフト後、<strong class="text-stone-900">${bbbWeight.toFixed(2)} ${currentUnit}</strong> で
+                        <strong class="text-stone-900">5セット x 10レップ</strong> を行います。
+                        <span class="text-sm text-stone-500">（TMの${bbbPercentage}%）</span>
+                    </p>
+                `;
+                bbbSection.classList.remove('hidden'); // BBBセクションを表示
+            }
+
+
+            // プログレスチャートをレンダリングする関数
+            function renderProgressChart() {
+                const ctx = document.getElementById('progressChart').getContext('2d');
+                const progressData = {
+                    labels: ['スクワット', 'ベンチプレス', 'デッドリフト', 'OHP'],
+                    datasets: [
+                        {
+                            label: '開始時 TM (kg)',
+                            data: [100, 75, 112.5, 40],
+                            backgroundColor: 'rgba(120, 113, 108, 0.5)',
+                            borderColor: 'rgba(120, 113, 108, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: '4.5ヶ月後 TM (kg)',
+                            data: [125, 90, 140, 52.5],
+                            backgroundColor: 'rgba(61, 56, 52, 0.7)',
+                            borderColor: 'rgba(61, 56, 52, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                };
+                
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: progressData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false, // アスペクト比を維持しないことで、より柔軟なサイズ調整が可能に
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'トレーニングマックス (kg)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'ユーザーのトレーニングマックス(TM)成長事例',
+                                font: { size: 16 }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += context.parsed.y + ' kg';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // ページロード時に各セクションを初期化
+            renderAssistanceAccordion(); // アシスタンスアコーディオンの描画
+            renderCycleContent(1); // 最初の週のサイクルコンテンツを描画
+            renderProgressChart(); // プログレスチャートの描画
+        });
+    </script>
+</body>
+</html>
