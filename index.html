@@ -12,8 +12,9 @@
     <!-- 関連キーワードを検索エンジンに伝えるためのkeywordsメタタグを追加 -->
     <meta name="keywords" content="5/3/1, 531, 筋トレ, 筋力トレーニング, プログラム, ジム・ウェンドラー, 1RM, トレーニングマックス, サイクル計算機, ウェイトトレーニング, 漸進的過負荷, BIG3, スクワット, ベンチプレス, デッドリフト, OHP, アシスタンスワーク" />
     
-    <!-- スクリプトの読み込みを非同期 (async) に変更し、ページのレンダリングをブロックしないように最適化 -->
-    <script src="https://cdn.tailwindcss.com" async></script>
+    <!-- Tailwind CSSのスクリプトからasync属性を削除し、同期的に読み込むことで初期表示のスタイル崩れを防ぐ -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- その他のスクリプトは非同期 (async) のままで問題ありません -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js" async></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" async></script>
     
