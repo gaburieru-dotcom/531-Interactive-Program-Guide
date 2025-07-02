@@ -3,20 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5/3/1プログラム インタラクティブガイド</title>
+    <title>5/3/1 プログラムナビゲーター</title>
     <!-- Google Search Consoleの正しいメタタグをここに挿入 -->
-    <meta name="google-site-verification" content="google-site-verification=uvV8RvuTlFAxxs4Y07ph-xPMdADIE3NP0m2RXdYGsaY" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- html2canvasライブラリを追加 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- content属性から不要な 'google-site-verification=' プレフィックスを削除 -->
+    <meta name="google-site-verification" content="uvV8RvuTlFAxxs4Y07ph-xPMdADIE3NP0m2RXdYGsaY" />
+    <!-- 検索エンジンにサイトの目的を明確に伝えるためのdescriptionメタタグを追加 -->
+    <meta name="description" content="ジム・ウェンドラーの5/3/1プログラムに特化したインタラクティブガイド。1RM計算機であなただけのトレーニング計画を作成し、筋力向上を目指しましょう。アシスタンスワーク、サイクル解説、FAQも掲載。" />
+    <!-- 関連キーワードを検索エンジンに伝えるためのkeywordsメタタグを追加 -->
+    <meta name="keywords" content="5/3/1, 531, 筋トレ, 筋力トレーニング, プログラム, ジム・ウェンドラー, 1RM, トレーニングマックス, サイクル計算機, ウェイトトレーニング, 漸進的過負荷, BIG3, スクワット, ベンチプレス, デッドリフト, OHP, アシスタンスワーク" />
+    
+    <!-- スクリプトの読み込みを非同期 (async) に変更し、ページのレンダリングをブロックしないように最適化 -->
+    <script src="https://cdn.tailwindcss.com" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" async></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" async></script>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutrals -->
-    <!-- Application Structure Plan: アプリケーションは、ユーザーが5/3/1プログラムを「理解」し、「計画」し、「実践」するための論理的な流れに沿って構成されています。まず「概要」で基本を学び、次に「仕組み」で周期的な構造を視覚的に理解します。中心的な機能である「サイクル計算機」では、ユーザーが自身のデータを入力してパーソナライズされたトレーニング計画を即座に作成できます。これにより、報告書の理論的な知識が実践的な行動へと直結します。「アシスタンスワーク」と「FAQ」セクションは、さらなる探求と疑問解消をサポートします。このタスク指向の構造は、静的な報告書を動的で使いやすいツールへと変換し、ユーザーの学習とモチベーション向上を最大化するために選択されました。 -->
-    <!-- Visualization & Content Choices: 報告書の各情報を、ユーザーの理解とインタラクションを最大化する目的で最適な形式に変換しました。1) 報告書情報：4つの主要リフト → 目標：情報を素早く伝達 → 提示方法：アイコン付きカード → 理由：視覚的な識別を容易にし、情報を魅力的に見せるため。 2) 報告書情報：4週間のサイクル構造（表1）→ 目標：周期的な流れを理解させる → 提示方法：インタラクティブなタブ付きダイアグラム → 理由：静的な表よりも動的で理解しやすく、ユーザーの関与を促すため。 3) 報告書情報：ユーザーの進捗例（表2）→ 目標：プログラムの効果を比較・提示 → 提示方法：Chart.jsによる棒グラフ → 理由：開始時と終了時の成長を視覚的に強調し、プログラムの有効性を直感的に伝えるため。 4) 報告書情報：アシスタンスワークの種類 → 目標：情報を整理して提供 → 提示方法：アコーディオンUI → 理由：大量のテキスト情報をコンパクトにまとめ、ユーザーが必要な情報だけを選択して閲覧できるようにするため。これらの選択はすべて、ユーザー体験を向上させ、複雑な情報を消化しやすくすることを目的としています。 -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    
     <style>
         body { font-family: 'Noto Sans JP', sans-serif; }
         .chart-container {
@@ -74,8 +78,8 @@
             <h1 class="text-xl md:text-2xl font-bold text-stone-900 flex items-center">
                 <!-- 画像サイズをh-10 w-10 (40x40px) に変更 -->
                 <!-- srcを相対パス（images/header_logo.png）に変更。onerrorでフォールバック画像を設定 -->
-                <img src="images/header_logo.png" onerror="this.onerror=null;this.src='https://placehold.co/40x40/3D3834/FFFFFF?text=531';" alt="5/3/1ロゴ" class="h-10 w-10 mr-2 rounded-full">
-                5/3/1 Interactive Guide
+                <img src="images/header_logo.png" onerror="this.onerror=null;this.src='https://placehold.co/40x40/3D3834/FFFFFF?text=531';" alt="5/3/1プログラムナビゲーターロゴ" class="h-10 w-10 mr-2 rounded-full">
+                5/3/1 プログラムナビゲーター
             </h1>
             <div class="hidden md:flex space-x-6">
                 <a href="#overview" class="text-stone-600 hover:text-stone-900 transition">概要</a>
@@ -121,7 +125,7 @@
                             <span class="text-xl mr-3">🛡️</span>
                             <div><strong class="text-stone-800">安全性:</strong> サブマキシマル（最大未満の）重量で始め、安全にフォームを習得。</div>
                         </div>
-                         <div class="flex items-start p-3 bg-white rounded-lg shadow-sm">
+                           <div class="flex items-start p-3 bg-white rounded-lg shadow-sm">
                             <span class="text-xl mr-3">💪</span>
                             <div><strong class="text-stone-800">シンプルさ:</strong> 複雑な計算は不要。明確なルールで迷わずトレーニング。</div>
                         </div>
@@ -212,7 +216,6 @@
                         <!-- BBBアシスタンスの割合入力フィールドを追加 -->
                         <div class="pt-4 border-t border-gray-200">
                             <label for="bbb-percentage" class="block text-sm font-medium text-stone-700">BBBアシスタンス (%)</label>
-                            <!-- value="60" を削除し、プレースホルダーのみに -->
                             <input type="number" id="bbb-percentage" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-stone-500 focus:ring-stone-500" placeholder="60">
                             <p class="text-xs text-stone-500 mt-1">Boring But Big (BBB) のTMに対する割合（通常50-60%）。空欄の場合は60%で計算されます。</p>
                         </div>
@@ -240,7 +243,7 @@
                             <div id="bbb-plan-details" class="p-3 bg-stone-100 rounded-md"></div>
                         </div>
                     </div>
-                     <div id="result-placeholder" class="bg-white p-6 rounded-lg shadow-lg min-h-full flex items-center justify-center">
+                    <div id="result-placeholder" class="bg-white p-6 rounded-lg shadow-lg min-h-full flex items-center justify-center">
                         <p class="text-stone-500 text-center">左側にあなたの1RMを入力して、<br>トレーニング計画を生成してください。</p>
                     </div>
                 </div>
@@ -436,7 +439,7 @@
                             </div>
                         `).join('')}
                     </div>
-                     <p class="text-center text-sm text-stone-500 mt-4">最後のセットの「+」は、As Many Reps As Possible (AMRAP) を意味します。</p>
+                    <p class="text-center text-sm text-stone-500 mt-4">最後のセットの「+」は、As Many Reps As Possible (AMRAP) を意味します。</p>
                 `;
                 // フェードインアニメーションをリセットして再適用
                 cycleContent.classList.remove('fade-in');
@@ -500,7 +503,7 @@
                 });
                 // 計算結果が表示されている場合は再計算して表示を更新
                 if (document.getElementById('result-output').classList.contains('hidden') === false) {
-                     calculateAndDisplayPlan();
+                    calculateAndDisplayPlan();
                 }
             }
 
@@ -521,6 +524,7 @@
                 // 入力がない場合はエラーメッセージを表示して終了
                 if (!hasInput) {
                     document.getElementById('lift-tm-display').innerHTML = `<p class="text-red-500">少なくとも1つのリフトの1RMを入力してください。</p>`;
+                    document.getElementById('lift-plan-table').innerHTML = ''; // テーブルをクリア
                     // BBBセクションも非表示にする
                     document.getElementById('bbb-plan-section').classList.add('hidden');
                     return;
@@ -535,8 +539,8 @@
             const liftTabs = document.getElementById('lift-tabs');
             // リフト別タブのクリックイベントリスナー
             liftTabs.addEventListener('click', (e) => {
-                 const button = e.target.closest('button');
-                 if (button) {
+                const button = e.target.closest('button');
+                if (button) {
                     currentLift = button.dataset.lift; // 選択されたリフトを更新
                     // 全てのタブのアクティブ状態を解除
                     liftTabs.querySelectorAll('button').forEach(btn => {
@@ -547,7 +551,7 @@
                     button.classList.add('tab-active');
                     button.classList.remove('tab-inactive');
                     renderLiftPlan(currentLift); // 選択されたリフトの計画をレンダリング
-                 }
+                }
             });
             
             // 特定のリフトのトレーニング計画を表示する関数
@@ -555,10 +559,10 @@
                 const tm = trainingMaxes[lift];
                 // TMが計算できない、または0以下の場合はメッセージを表示して終了
                 if (isNaN(tm) || tm <= 0) {
-                     document.getElementById('lift-tm-display').innerHTML = `<p class="text-stone-600">このリフトの1RMが入力されていません。</p>`;
-                     document.getElementById('lift-plan-table').innerHTML = ''; // テーブルをクリア
-                     document.getElementById('bbb-plan-section').classList.add('hidden'); // BBBセクションも非表示にする
-                     return;
+                    document.getElementById('lift-tm-display').innerHTML = `<p class="text-stone-600">このリフトの1RMが入力されていません。</p>`;
+                    document.getElementById('lift-plan-table').innerHTML = ''; // テーブルをクリア
+                    document.getElementById('bbb-plan-section').classList.add('hidden'); // BBBセクションも非表示にする
+                    return;
                 }
 
                 // TMの表示を更新
