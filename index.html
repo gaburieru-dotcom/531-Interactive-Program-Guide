@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5/3/1 プログラムナビゲーター</title>
+    <title>5/3/1プログラム インタラクティブガイド</title>
     <!-- Google Search Consoleの正しいメタタグをここに挿入 -->
-    <!-- content属性から不要な 'google-site-verification=' プレフィックスを削除 -->
+    <!-- content属性から不要な 'google-site-verification=' プレフィックスを削除 (SEO対策) -->
     <meta name="google-site-verification" content="uvV8RvuTlFAxxs4Y07ph-xPMdADIE3NP0m2RXdYGsaY" />
-    <!-- 検索エンジンにサイトの目的を明確に伝えるためのdescriptionメタタグを追加 -->
+    <!-- 検索エンジンにサイトの目的を明確に伝えるためのdescriptionメタタグを追加 (SEO対策) -->
     <meta name="description" content="ジム・ウェンドラーの5/3/1プログラムに特化したインタラクティブガイド。1RM計算機であなただけのトレーニング計画を作成し、筋力向上を目指しましょう。アシスタンスワーク、サイクル解説、FAQも掲載。" />
-    <!-- 関連キーワードを検索エンジンに伝えるためのkeywordsメタタグを追加 -->
+    <!-- 関連キーワードを検索エンジンに伝えるためのkeywordsメタタグを追加 (SEO対策) -->
     <meta name="keywords" content="5/3/1, 531, 筋トレ, 筋力トレーニング, プログラム, ジム・ウェンドラー, 1RM, トレーニングマックス, サイクル計算機, ウェイトトレーニング, 漸進的過負荷, BIG3, スクワット, ベンチプレス, デッドリフト, OHP, アシスタンスワーク" />
     
-    <!-- Tailwind CSSのスクリプトからasync属性を削除し、同期的に読み込むことで初期表示のスタイル崩れを防ぐ -->
+    <!-- スクリプトのasync属性は元のコードに合わせて削除（初期表示のスタイル崩れ対策） -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- その他のスクリプトは非同期 (async) のままで問題ありません -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js" async></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -79,8 +78,8 @@
             <h1 class="text-xl md:text-2xl font-bold text-stone-900 flex items-center">
                 <!-- 画像サイズをh-10 w-10 (40x40px) に変更 -->
                 <!-- srcを相対パス（images/header_logo.png）に変更。onerrorでフォールバック画像を設定 -->
-                <img src="images/header_logo.png" onerror="this.onerror=null;this.src='https://placehold.co/40x40/3D3834/FFFFFF?text=531';" alt="5/3/1プログラムナビゲーターロゴ" class="h-10 w-10 mr-2 rounded-full">
-                5/3/1 プログラムナビゲーター
+                <img src="images/header_logo.png" onerror="this.onerror=null;this.src='https://placehold.co/40x40/3D3834/FFFFFF?text=531';" alt="5/3/1ロゴ" class="h-10 w-10 mr-2 rounded-full">
+                5/3/1 Interactive Guide
             </h1>
             <div class="hidden md:flex space-x-6">
                 <a href="#overview" class="text-stone-600 hover:text-stone-900 transition">概要</a>
@@ -217,7 +216,8 @@
                         <!-- BBBアシスタンスの割合入力フィールドを追加 -->
                         <div class="pt-4 border-t border-gray-200">
                             <label for="bbb-percentage" class="block text-sm font-medium text-stone-700">BBBアシスタンス (%)</label>
-                            <input type="number" id="bbb-percentage" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-stone-500 focus:ring-stone-500" placeholder="60">
+                            <!-- value="60" を元のコードに戻す -->
+                            <input type="number" id="bbb-percentage" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-stone-500 focus:ring-stone-500" value="60" placeholder="60">
                             <p class="text-xs text-stone-500 mt-1">Boring But Big (BBB) のTMに対する割合（通常50-60%）。空欄の場合は60%で計算されます。</p>
                         </div>
                     </div>
@@ -276,7 +276,7 @@
                     <p class="text-stone-700">正確な1RMが不明な場合、過去のトレーニング記録から推定するか、明らかに扱える軽い重量から始めてください。大切なのは「軽い重量から始める」原則を守ることです。</p>
                     <!-- ここにアプリの宣伝を追加 -->
                     <div class="mt-4 p-3 bg-stone-100 rounded-md text-sm text-stone-700">
-                        <p class="font-semibold mb-2">💡 1RMの計算には、私の開発したアプリも役立ちます！</p>
+                        <p class="font-semibold mb-2">� 1RMの計算には、私の開発したアプリも役立ちます！</p>
                         <p>「Max RM換算機 for BIG3」は、あなたの挙上重量とレップ数から、簡単に1RMを計算できるツールです。</p>
                         <a href="https://apps.apple.com/jp/app/max-rm%E6%8F%9B%E7%AE%97%E6%A9%9F-for-big3/id6569255164" target="_blank" class="inline-block mt-2 bg-stone-800 text-white px-4 py-2 rounded-lg text-xs font-medium hover:bg-stone-700 transition duration-300">
                             App Storeでチェックする
@@ -701,3 +701,4 @@
     </script>
 </body>
 </html>
+�
